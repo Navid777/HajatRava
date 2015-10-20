@@ -1,0 +1,54 @@
+[
+  {% for project in projects %}
+  {
+    "id":
+    {{ project.id }},
+    "name": "{{ project.name }}",
+    "image": null,
+    "general":
+    {{ project.general }},
+    "active":
+    {{ project.active }},
+    "startDate":
+    {{ project.start_date|date:"d-m-y" }},
+    "endDate":
+    {{ project.end_date|date:"d-m-y"  }},
+    "createDate":
+    {{ project.create_date|date:"d-m-y"  }},
+    "creator":
+    {{ project.creator }},
+    "type": {
+      "id":
+      {{ project.type.id }},
+      "title":
+      {{ project.type.title }},
+      "repeatPeriodInHour":
+      {{ project.type.repeat_period_in_hour }},
+      "numOfRepeat":
+      {{ project.type.num_of_repeat }},
+      "startDate":
+      {{ project.type.start_date|date:"d-m-y"  }},
+      "endDate":
+      {{ project.type.end_date|date:"d-m-y"  }},
+      "hoursToRemainOnBoard":
+      {{ project.type.hours_to_remain_on_board }},
+      "numberRestriction":
+      {{ project.type.number_restriction }},
+      "taskMessage":
+      {{ project.type.task_message }},
+      "publicUserTask":
+      {{ project.type.public_user_task }},
+      "numOfEpisod":
+      {{ project.type.num_of_episodes }},
+      "target":
+      {{ project.type.target }},
+      "todoNum":
+      {{ project.type.todo_num }},
+      "parentType":
+      {{ project.type.parent_type }}
+    },
+    "members": {{ project.members.all.count }}
+  }{% if not forloop.last %},{% endif %}
+
+  {% endfor %}
+]

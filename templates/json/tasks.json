@@ -1,0 +1,14 @@
+[
+  {% for task in tasks %}
+  {
+    "id": {{ task.id }},
+    "title": {{ task.title }},
+    "done": {{ task.done }},
+    "assignedTo": {{ task.assigned_to.id }},
+    "project": {{ task.project.id }},
+    "creator": {{ task.creator }},
+    "createDate": {{ task.create_date|date:"d-m-y" }},
+    "dueDate": {{ task.due_date | date:"d-m-y"}}
+  }{% if not forloop.last %},{% endif %}
+  {% endfor %}
+]
