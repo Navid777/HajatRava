@@ -47,3 +47,6 @@ class Text(models.Model):
     TITLE_CHOICES = (('TI', 'title'), ('AD', 'advertisement'))
     title = models.TextField(choices=TITLE_CHOICES)
     text = models.TextField()
+
+    def __unicode__(self):
+        return self.title

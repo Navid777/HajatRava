@@ -6,3 +6,4 @@ admin.site.register(Project)
 admin.site.register(Type)
 admin.site.register(Text)
 
+
