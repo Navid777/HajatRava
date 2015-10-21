@@ -44,7 +44,7 @@ class Task(models.Model):
 
 
 class Text(models.Model):
-    TITLE_CHOICES = (('TI', 'title'), ('AD', 'advertisement'))
+    TITLE_CHOICES = (('TI', 'title'), ('AD', 'advertisement'), ('AU', 'about us'))
     title = models.TextField(choices=TITLE_CHOICES)
     text = models.TextField()
 

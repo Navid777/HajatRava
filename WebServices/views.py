@@ -6,7 +6,7 @@ from WebServices.models import Text, Task, Project
 
 
 def get_about_us(request):
-    text = Text.objects.get(title="title")
+    text = Text.objects.get(title="AU")
     return render(request, 'about_us.html', {'text': text})
 
 
