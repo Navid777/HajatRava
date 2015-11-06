@@ -1,14 +1,15 @@
+{% load filters%}
 [
   {% for task in tasks %}
   {
-    "id": {{ task.id }},
-    "title": {{ task.title }},
-    "done": {{ task.done }},
-    "assignedTo": {{ task.assigned_to.id }},
-    "project": {{ task.project.id }},
-    "creator": {{ task.creator }},
-    "createDate": {{ task.create_date|date:"d-m-y" }},
-    "dueDate": {{ task.due_date | date:"d-m-y"}}
+    "id": {{ task.id|android }},
+    "title": {{ task.title|android }},
+    "done": {{ task.done|android }},
+    "assignedTo": {{ task.assigned_to.id|android }},
+    "project": {{ task.project.id|android }},
+    "creator": {{ task.creator|android }},
+    "createDate": {{ task.create_date|date:"d-m-y"|android }},
+    "dueDate": {{ task.due_date | date:"d-m-y"|android}}
   }{% if not forloop.last %},{% endif %}
   {% endfor %}
 ]

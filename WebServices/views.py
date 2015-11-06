@@ -11,7 +11,7 @@ def get_about_us(request):
 
 
 def get_ad_message(request):
-    text = Text.objects.get(title="ad_message")
+    text = Text.objects.get(title="AD")
     return render(request, 'ad_message.html', {'text': text})
 
 
