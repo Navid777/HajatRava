@@ -5,7 +5,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from WebServices.models import Text, Task, Project
-from django.contrib.auth import login
+from django.contrib.auth import auth_login
 
 
 def get_about_us(request):
@@ -63,7 +63,7 @@ def login(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
-                login(request, user)
+                auth_login(request, user)
                 return HttpResponse("S")
         return HttpResponse("F2")
 
