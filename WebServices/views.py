@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from WebServices.models import Text, Task, Project
 
 
@@ -50,6 +51,7 @@ def get_project_tasks(request, project_id):
     return render(request, 'json/tasks.json', {'tasks': tasks})
 
 
+@csrf_exempt
 def login(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -64,6 +66,7 @@ def login(request):
         return HttpResponse("F2")
 
 
+@csrf_exempt
 def create_user(request):
     if request.method == "POST":
         username = request.POST['username']
