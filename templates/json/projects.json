@@ -5,22 +5,26 @@
     "id":
     {{ project.id|android }},
     "name": "{{ project.name }}",
+    "description":
+    {{ project.description|android}},
     "image": null,
     "general":
     {{ project.general|android }},
     "active":
     {{ project.active|android }},
     "startDate":
-    {{ project.start_date|date:"d-m-y"|android }},
+    {{ project.start_date|date:"Y-m-d"|android }},
     "endDate":
-    {{ project.end_date|date:"d-m-y"|android  }},
+    {{ project.end_date|date:"Y-m-d"|android  }},
     "createDate":
-    {{ project.create_date|date:"d-m-y"|android  }},
+    {{ project.create_date|date:"Y-m-d"|android  }},
     "creator":
     {{ project.creator.username|android }},
     "type": {
       "id":
       {{ project.type.id|android }},
+      "description":
+      {{ project.type.description|android }},
       "title":
       {{ project.type.title|android }},
       "repeatPeriodInHour":
@@ -28,9 +32,9 @@
       "numOfRepeat":
       {{ project.type.num_of_repeat|android }},
       "startDate":
-      {{ project.type.start_date|date:"d-m-y"|android  }},
+      {{ project.type.start_date|date:"Y-m-d"|android  }},
       "endDate":
-      {{ project.type.end_date|date:"d-m-y"|android  }},
+      {{ project.type.end_date|date:"Y-m-d"|android  }},
       "hoursToRemainOnBoard":
       {{ project.type.hours_to_remain_on_board|android }},
       "numberRestriction":

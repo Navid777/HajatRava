@@ -8,8 +8,8 @@
     "assignedTo": {{ task.assigned_to.id|android }},
     "project": {{ task.project.id|android }},
     "creator": {{ task.creator.username|android }},
-    "createDate": {{ task.create_date|date:"d-m-y"|android }},
-    "dueDate": {{ task.due_date | date:"d-m-y"|android}}
+    "createDate": {{ task.create_date|date:"Y-m-d"|android }},
+    "dueDate": {{ task.due_date | date:"Y-m-d"|android}}
   }{% if not forloop.last %},{% endif %}
   {% endfor %}
 ]
