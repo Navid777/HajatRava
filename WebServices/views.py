@@ -5,7 +5,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from WebServices.models import Text, Task, Project
-from django.contrib.auth import auth_login
+from django.contrib.auth import login as auth_login
 
 
 def get_about_us(request):
