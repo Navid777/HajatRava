@@ -7,12 +7,12 @@ from WebServices.models import Text, Task, Project
 
 def get_about_us(request):
     text = Text.objects.get(title="AU")
-    return render(request, 'about_us.html', {'text': text})
+    return render(request, 'about_us.html', {'text': text.text})
 
 
 def get_ad_message(request):
     text = Text.objects.get(title="AD")
-    return render(request, 'ad_message.html', {'text': text})
+    return render(request, 'ad_message.html', {'text': text.text})
 
 
 def set_task_done(request, task_id):
