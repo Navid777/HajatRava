@@ -17,7 +17,7 @@
     "createDate":
     {{ project.create_date|date:"d-m-y"|android  }},
     "creator":
-    {{ project.creator|android }},
+    {{ project.creator.username|android }},
     "type": {
       "id":
       {{ project.type.id|android }},
