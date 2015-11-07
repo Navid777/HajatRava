@@ -18,6 +18,6 @@ def android(delta):
         return 'false'
     if delta == '':
         return 'null'
-    if isinstance(delta, int):
+    if isinstance(delta, (int, long, float)):
         return delta
     return "\""+delta+"\""
