@@ -102,7 +102,7 @@ def records(request, username):
         elif type == 2:
             quran_parts += task.project.type.todo_num
         elif type == 3:
-            fatehe_num += tasks.project.type.todo_num
+            fatehe_num += task.project.type.todo_num
         else:
-            doa_num += tasks.project.type.todo_num
+            doa_num += task.project.type.todo_num
     return render(request, 'records.html', {'salavat': salavat_num, 'quran': quran_parts, 'fatehe': fatehe_num, 'doa': doa_num})

@@ -18,6 +18,9 @@ class Type(models.Model):
     num_of_repeat = models.IntegerField(null=True, blank=True)
     public_user_task = models.TextField(null=True, blank=True)
 
+    def __unicode__(self):
+        return self.title
+
 
 class Project(models.Model):
     name = models.TextField(null=True, blank=True)
@@ -32,6 +35,9 @@ class Project(models.Model):
     members = models.ManyToManyField(User, related_name='member')
     image = models.FileField(upload_to='project_images/', null=True, blank=True)
 
+    def __unicode__(self):
+        return self.name
+
 
 class Task(models.Model):
     title = models.TextField(null=True, blank=True)
@@ -41,6 +47,14 @@ class Task(models.Model):
     due_date = models.DateField(null=True, blank=True)
     assigned_to = models.ForeignKey(User, related_name="assigned_to", null=True, blank=True)
     creator = models.ForeignKey(User, related_name="task_creator", null=True, blank=True)
+
+    def __unicode__(self):
+        result = self.title + '-' + self.assigned_to.username + '-'
+        if self.done:
+            result += 'done'
+        else:
+            result += 'not_done'
+        return result
 
 
 class Text(models.Model):
