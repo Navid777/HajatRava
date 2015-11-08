@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^projects/projects/$', views.get_projects),
     url(r'^projects/(?P<project_id>\d+)/(?P<username>\w+)$', views.add_user_to_project),
     url(r'^tasks/(?P<project_id>\d+)/project$', views.get_project_tasks),
+    url(r'^user_tasks/(?P<username>\w+)$', views.get_user_tasks),
     url(r'^login/$', views.login),
     url(r'^create_user/$', views.create_user),
 ]
