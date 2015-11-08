@@ -10,7 +10,23 @@ import datetime
 
 def get_about_us(request):
     text = Text.objects.get(title="AU")
-    return render(request, 'about_us.html', {'text': text.text})
+    tasks = Task.objects.filter(done=True)
+    salavat_num = 0
+    quran_parts = 0
+    fatehe_num = 0
+    doa_num = 0
+    for task in tasks:
+        type = task.project.type.parent_type
+        if type == 1:
+            salavat_num += task.project.type.todo_num
+        elif type == 2:
+            quran_parts += task.project.type.todo_num
+        elif type == 3:
+            fatehe_num += task.project.type.todo_num
+        else:
+            doa_num += task.project.type.todo_num
+    return render(request, 'about_us.html', {'text': text.text, 'salavat': salavat_num,
+                                             'quran': quran_parts, 'fatehe': fatehe_num, 'doa': doa_num})
 
 
 def get_ad_message(request):
@@ -26,7 +42,7 @@ def set_task_done(request, task_id):
 
 
 def get_projects(request):
-    projects = Project.objects.all()
+    projects = Project.objects.filter(active=True)
     return render(request, 'json/projects.json', {'projects': projects})
 
 
@@ -57,7 +73,7 @@ def get_project_tasks(request, project_id):
 
 
 def get_user_tasks(request, username):
-    user = get_object_or_404(User, username=username)
+    user = get_object_or_404(User, username=username, done=False)
     tasks = Task.objects.filter(assigned_to=user)
     return render(request, 'json/tasks.json', {'tasks': tasks})
 
@@ -90,7 +106,7 @@ def create_user(request):
 
 def records(request, username):
     user = get_object_or_404(User, username=username)
-    tasks = Task.objects.filter(assigned_to=user)
+    tasks = Task.objects.filter(assigned_to=user, done=True)
     salavat_num = 0
     quran_parts = 0
     fatehe_num = 0
