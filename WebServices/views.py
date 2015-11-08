@@ -86,3 +86,23 @@ def create_user(request):
         user = User.objects.create_user(username, email, password)
         user.save()
         return render(request, 'json/success.json')
+
+
+def records(request, username):
+    user = get_object_or_404(User, username=username)
+    tasks = Task.objects.filter(assigned_to=user)
+    salavat_num = 0
+    quran_parts = 0
+    fatehe_num = 0
+    doa_num = 0
+    for task in tasks:
+        type = task.project.type.parent_type
+        if type == 1:
+            salavat_num += task.project.type.todo_num
+        elif type == 2:
+            quran_parts += task.project.type.todo_num
+        elif type == 3:
+            fatehe_num += tasks.project.type.todo_num
+        else:
+            doa_num += tasks.project.type.todo_num
+    return render(request, 'records.html', {'salavat': salavat_num, 'quran': quran_parts, 'fatehe': fatehe_num, 'doa': doa_num})

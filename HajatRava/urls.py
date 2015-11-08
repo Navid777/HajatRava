@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^user_tasks/(?P<username>\w+)$', views.get_user_tasks),
     url(r'^login/$', views.login),
     url(r'^create_user/$', views.create_user),
+    url(r'^records/(?P<username>\w+)$', views.records),
 ]
