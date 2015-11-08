@@ -40,8 +40,8 @@ def get_user_tasks(request, user_id):
     return render(request, 'json/tasks.json', {'tasks': tasks})
 
 
-def add_user_to_project(request, project_id, user_id):
-    user = User.objects.filter(id=user_id)
+def add_user_to_project(request, project_id, username):
+    user = User.objects.get(username=username)
     project = Project.objects.get(id=project_id)
     project.members.add(user)
     project.save()
