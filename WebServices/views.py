@@ -73,8 +73,8 @@ def get_project_tasks(request, project_id):
 
 
 def get_user_tasks(request, username):
-    user = get_object_or_404(User, username=username, done=False)
-    tasks = Task.objects.filter(assigned_to=user)
+    user = get_object_or_404(User, username=username)
+    tasks = Task.objects.filter(assigned_to=user, done=false)
     return render(request, 'json/tasks.json', {'tasks': tasks})
 
 
