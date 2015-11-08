@@ -43,12 +43,10 @@ def get_user_tasks(request, user_id):
 def add_user_to_project(request, project_id, username):
     user = User.objects.get(username=username)
     project = Project.objects.get(id=project_id)
-    if user in project.members.all():
-        return HttpResponse("This user is already assigned to this project.")
     project.members.add(user)
     project.save()
     task = Task.objects.create(project=project, assigned_to=user, creator=user, due_date=project.end_date,
-                               create_date=datetime.date.today(), title=project.description)
+                               create_date=datetime.date.today(), title=project.type.public_user_task)
     task.save()
     return render(request, 'json/success.json', {'project': project})
 

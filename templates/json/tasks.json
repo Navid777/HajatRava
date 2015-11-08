@@ -5,7 +5,7 @@
     "id": {{ task.id|android }},
     "title": {{ task.title|android }},
     "done": {{ task.done|android }},
-    "assignedTo": {{ task.assigned_to.id|android }},
+    "assignedTo": {{ task.assigned_to.username|android }},
     "project": {{ task.project.id|android }},
     "creator": {{ task.creator.username|android }},
     "createDate": {{ task.create_date|date:"Y-m-d"|android }},
