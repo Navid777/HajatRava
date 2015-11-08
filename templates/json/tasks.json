@@ -6,7 +6,60 @@
     "title": {{ task.title|android }},
     "done": {{ task.done|android }},
     "assignedTo": {{ task.assigned_to.username|android }},
-    "project": {{ task.project.id|android }},
+    "project":
+  {
+    "id":
+    {{ task.project.id|android }},
+    "name": "{{ task.project.name }}",
+    "description":
+    {{ task.project.description|android}},
+    "image": null,
+    "general":
+    {{ task.project.general|android }},
+    "active":
+    {{ task.project.active|android }},
+    "startDate":
+    {{ task.project.start_date|date:"Y-m-d"|android }},
+    "endDate":
+    {{ task.project.end_date|date:"Y-m-d"|android  }},
+    "createDate":
+    {{ task.project.create_date|date:"Y-m-d"|android  }},
+    "creator":
+    {{ task.project.creator.username|android }},
+    "type": {
+      "id":
+      {{ task.project.type.id|android }},
+      "description":
+      {{ task.project.type.description|android }},
+      "title":
+      {{ task.project.type.title|android }},
+      "repeatPeriodInHour":
+      {{ task.project.type.repeat_period_in_hour|android }},
+      "numOfRepeat":
+      {{ task.project.type.num_of_repeat|android }},
+      "startDate":
+      {{ task.project.type.start_date|date:"Y-m-d"|android  }},
+      "endDate":
+      {{ task.project.type.end_date|date:"Y-m-d"|android  }},
+      "hoursToRemainOnBoard":
+      {{ task.project.type.hours_to_remain_on_board|android }},
+      "numberRestriction":
+      {{ task.project.type.number_restriction|android }},
+      "taskMessage":
+      {{ task.project.type.task_message|android }},
+      "publicUserTask":
+      {{ task.project.type.public_user_task|android }},
+      "numOfEpisod":
+      {{ task.project.type.num_of_episodes|android }},
+      "target":
+      {{ task.project.type.target|android }},
+      "todoNum":
+      {{ task.project.type.todo_num|android }},
+      "parentType":
+      {{ task.project.type.parent_type|android }}
+    },
+    "members": {{ task.project.members.all.count|android }}
+  },
     "creator": {{ task.creator.username|android }},
     "createDate": {{ task.create_date|date:"Y-m-d"|android }},
     "dueDate": {{ task.due_date | date:"Y-m-d"|android}}
