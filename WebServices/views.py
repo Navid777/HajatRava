@@ -1,18 +1,37 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from WebServices.models import Text, Task, Project
+from django.contrib.auth import login as auth_login
+import datetime
 
 
 def get_about_us(request):
     text = Text.objects.get(title="AU")
-    return render(request, 'about_us.html', {'text': text})
+    tasks = Task.objects.filter(done=True)
+    salavat_num = 0
+    quran_parts = 0
+    fatehe_num = 0
+    doa_num = 0
+    for task in tasks:
+        type = task.project.type.parent_type
+        if type == 1:
+            salavat_num += task.project.type.todo_num
+        elif type == 2:
+            quran_parts += task.project.type.todo_num
+        elif type == 3:
+            fatehe_num += task.project.type.todo_num
+        else:
+            doa_num += task.project.type.todo_num
+    return render(request, 'about_us.html', {'text': text.text, 'salavat': salavat_num,
+                                             'quran': quran_parts, 'fatehe': fatehe_num, 'doa': doa_num})
 
 
 def get_ad_message(request):
-    text = Text.objects.get(title="ad_message")
-    return render(request, 'ad_message.html', {'text': text})
+    text = Text.objects.get(title="AD")
+    return render(request, 'ad_message.html', {'text': text.text})
 
 
 def set_task_done(request, task_id):
@@ -23,7 +42,7 @@ def set_task_done(request, task_id):
 
 
 def get_projects(request):
-    projects = Project.objects.all()
+    projects = Project.objects.filter(active=True)
     return render(request, 'json/projects.json', {'projects': projects})
 
 
@@ -37,11 +56,14 @@ def get_user_tasks(request, user_id):
     return render(request, 'json/tasks.json', {'tasks': tasks})
 
 
-def add_user_to_project(request, project_id, user_id):
-    user = User.objects.filter(id=user_id)
+def add_user_to_project(request, project_id, username):
+    user = User.objects.get(username=username)
     project = Project.objects.get(id=project_id)
     project.members.add(user)
     project.save()
+    task = Task.objects.create(project=project, assigned_to=user, creator=user, due_date=project.end_date,
+                               create_date=datetime.date.today(), title=project.type.public_user_task)
+    task.save()
     return render(request, 'json/success.json', {'project': project})
 
 
@@ -50,6 +72,13 @@ def get_project_tasks(request, project_id):
     return render(request, 'json/tasks.json', {'tasks': tasks})
 
 
+def get_user_tasks(request, username):
+    user = get_object_or_404(User, username=username)
+    tasks = Task.objects.filter(assigned_to=user, done=False)
+    return render(request, 'json/tasks.json', {'tasks': tasks})
+
+
+@csrf_exempt
 def login(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -58,12 +87,13 @@ def login(request):
         password = request.POST['password']
         user = authenticate(username=username, password=password)
         if user is not None:
-            if user.is_active():
-                login(request, user)
+            if user.is_active:
+                auth_login(request, user)
                 return HttpResponse("S")
         return HttpResponse("F2")
 
 
+@csrf_exempt
 def create_user(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -72,3 +102,23 @@ def create_user(request):
         user = User.objects.create_user(username, email, password)
         user.save()
         return render(request, 'json/success.json')
+
+
+def records(request, username):
+    user = get_object_or_404(User, username=username)
+    tasks = Task.objects.filter(assigned_to=user, done=True)
+    salavat_num = 0
+    quran_parts = 0
+    fatehe_num = 0
+    doa_num = 0
+    for task in tasks:
+        type = task.project.type.parent_type
+        if type == 1:
+            salavat_num += task.project.type.todo_num
+        elif type == 2:
+            quran_parts += task.project.type.todo_num
+        elif type == 3:
+            fatehe_num += task.project.type.todo_num
+        else:
+            doa_num += task.project.type.todo_num
+    return render(request, 'records.html', {'salavat': salavat_num, 'quran': quran_parts, 'fatehe': fatehe_num, 'doa': doa_num})

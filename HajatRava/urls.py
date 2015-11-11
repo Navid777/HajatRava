@@ -23,6 +23,10 @@ urlpatterns = [
     url(r'^advMsg/$', views.get_ad_message),
     url(r'^tasks/(?P<task_id>\d+)/done$', views.set_task_done),
     url(r'^projects/projects/$', views.get_projects),
-    url(r'^projects/(?P<project_id>\d+)/(?P<user_id>\d+)$', views.get_user_projects),
+    url(r'^projects/(?P<project_id>\d+)/(?P<username>\w+)$', views.add_user_to_project),
     url(r'^tasks/(?P<project_id>\d+)/project$', views.get_project_tasks),
+    url(r'^user_tasks/(?P<username>\w+)$', views.get_user_tasks),
+    url(r'^login/$', views.login),
+    url(r'^create_user/$', views.create_user),
+    url(r'^records/(?P<username>\w+)$', views.records),
 ]

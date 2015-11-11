@@ -1,53 +1,58 @@
+{% load filters %}
 [
   {% for project in projects %}
   {
     "id":
-    {{ project.id }},
+    {{ project.id|android }},
     "name": "{{ project.name }}",
+    "description":
+    {{ project.description|android}},
     "image": null,
     "general":
-    {{ project.general }},
+    {{ project.general|android }},
     "active":
-    {{ project.active }},
+    {{ project.active|android }},
     "startDate":
-    {{ project.start_date|date:"d-m-y" }},
+    {{ project.start_date|date:"Y-m-d"|android }},
     "endDate":
-    {{ project.end_date|date:"d-m-y"  }},
+    {{ project.end_date|date:"Y-m-d"|android  }},
     "createDate":
-    {{ project.create_date|date:"d-m-y"  }},
+    {{ project.create_date|date:"Y-m-d"|android  }},
     "creator":
-    {{ project.creator }},
+    {{ project.creator.username|android }},
     "type": {
       "id":
-      {{ project.type.id }},
+      {{ project.type.id|android }},
+      "description":
+      {{ project.type.description|android }},
       "title":
-      {{ project.type.title }},
+      {{ project.type.title|android }},
       "repeatPeriodInHour":
-      {{ project.type.repeat_period_in_hour }},
+      {{ project.type.repeat_period_in_hour|android }},
       "numOfRepeat":
-      {{ project.type.num_of_repeat }},
+      {{ project.type.num_of_repeat|android }},
       "startDate":
-      {{ project.type.start_date|date:"d-m-y"  }},
+      {{ project.type.start_date|date:"Y-m-d"|android  }},
       "endDate":
-      {{ project.type.end_date|date:"d-m-y"  }},
+      {{ project.type.end_date|date:"Y-m-d"|android  }},
       "hoursToRemainOnBoard":
-      {{ project.type.hours_to_remain_on_board }},
+      {{ project.type.hours_to_remain_on_board|android }},
       "numberRestriction":
-      {{ project.type.number_restriction }},
+      {{ project.type.number_restriction|android }},
       "taskMessage":
-      {{ project.type.task_message }},
+      {{ project.type.task_message|android }},
       "publicUserTask":
-      {{ project.type.public_user_task }},
+      {{ project.type|public_user_task|android }},
       "numOfEpisod":
-      {{ project.type.num_of_episodes }},
+      {{ project.type.num_of_episodes|android }},
       "target":
-      {{ project.type.target }},
+      {{ project.type.target|android }},
       "todoNum":
-      {{ project.type.todo_num }},
+      {{ project.type.todo_num|android }},
       "parentType":
-      {{ project.type.parent_type }}
+      {{ project.type.parent_type|android }}
     },
-    "members": {{ project.members.all.count }}
+    "members": {{ project.members.all.count|android }}
   }{% if not forloop.last %},{% endif %}
 
   {% endfor %}
