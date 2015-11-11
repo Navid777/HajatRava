@@ -42,7 +42,7 @@
       "taskMessage":
       {{ project.type.task_message|android }},
       "publicUserTask":
-      {{ project.type.public_user_task|android }},
+      {{ project.type|public_user_task|android }},
       "numOfEpisod":
       {{ project.type.num_of_episodes|android }},
       "target":

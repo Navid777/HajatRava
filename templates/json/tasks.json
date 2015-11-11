@@ -3,7 +3,7 @@
   {% for task in tasks %}
   {
     "id": {{ task.id|android }},
-    "title": {{ task.title|android }},
+    "title": {{ task|title|android }},
     "done": {{ task.done|android }},
     "assignedTo": {{ task.assigned_to.username|android }},
     "project":
@@ -48,7 +48,7 @@
       "taskMessage":
       {{ task.project.type.task_message|android }},
       "publicUserTask":
-      {{ task.project.type.public_user_task|android }},
+      {{ task.project.type|public_user_task|android }},
       "numOfEpisod":
       {{ task.project.type.num_of_episodes|android }},
       "target":

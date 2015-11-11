@@ -21,6 +21,9 @@ class Type(models.Model):
     def __unicode__(self):
         return self.title
 
+    def get_episode(self):
+        return len(Task.objects.filter(project__type=self)) % self.num_of_episodes
+
 
 class Project(models.Model):
     name = models.TextField(null=True, blank=True)
