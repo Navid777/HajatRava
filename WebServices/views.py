@@ -1,7 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404
+from django.utils.encoding import force_text
 from django.views.decorators.csrf import csrf_exempt
 from WebServices.models import Text, Task, Project
 from django.contrib.auth import login as auth_login
@@ -42,12 +46,12 @@ def set_task_done(request, task_id):
 
 
 def get_projects(request):
-    projects = Project.objects.filter(active=True)
+    projects = Project.objects.filter(active=True).order_by('-importance')
     return render(request, 'json/projects.json', {'projects': projects})
 
 
 def get_user_projects(request, user_id):
-    projects = Project.objects.filter(member__id=user_id)
+    projects = Project.objects.filter(member__id=user_id).order_by('-importance')
     return render(request, 'json/projects.json', {'projects': projects})
 
 
@@ -62,7 +66,7 @@ def add_user_to_project(request, project_id, username):
     project.members.add(user)
     project.save()
     task = Task.objects.create(project=project, assigned_to=user, creator=user, due_date=project.end_date,
-                               create_date=datetime.date.today(), title=project.type.public_user_task)
+                               create_date=datetime.date.today(), title=force_text(project.type.public_user_task).replace("%s", str(project.type.get_episode())))
     task.save()
     return render(request, 'json/success.json', {'project': project})
 
@@ -105,7 +109,10 @@ def create_user(request):
 
 
 def records(request, username):
-    user = get_object_or_404(User, username=username)
+    try:
+        user = User.objects.get(username=username)
+    except Exception:
+        return HttpResponse("لطفا ثبت نام کنید.")
     tasks = Task.objects.filter(assigned_to=user, done=True)
     salavat_num = 0
     quran_parts = 0

@@ -22,7 +22,7 @@ class Type(models.Model):
         return self.title
 
     def get_episode(self):
-        return len(Task.objects.filter(project__type=self)) % self.num_of_episodes
+        return (len(Task.objects.filter(project__type=self)) % self.num_of_episodes)+1
 
 
 class Project(models.Model):
@@ -37,6 +37,7 @@ class Project(models.Model):
     type = models.ForeignKey(Type, null=True, blank=True)
     members = models.ManyToManyField(User, related_name='member')
     image = models.FileField(upload_to='project_images/', null=True, blank=True)
+    importance = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name
