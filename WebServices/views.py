@@ -137,7 +137,7 @@ def get_project_information(request, username, project_id):
     user = get_object_or_404(User, username=username)
     khatm = len(done_tasks)*project.type.todo_num/project.type.target
     remaining_tasks = project.type.target/project.type.todo_num - \
-                    (len(done_tasks) % project.type.target/project.type.todo_num)
+        (len(done_tasks) % (project.type.target/project.type.todo_num))
     participated = len(Task.objects.filter(project=project, assigned_to=user)) != 0
     has_remaining_task = (len(Task.objects.filter(project=project, assigned_to=user, done=False)) == 0)and participated
     return render(request, 'json/project_info.json', {'khatm': khatm, 'remaining_tasks': remaining_tasks,
