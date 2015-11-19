@@ -3,5 +3,7 @@
   'khatm': {{ khatm }},
   'remaining_tasks': {{ remaining_tasks }},
   'participated': {{ participated|android }},
-  'has_remaining_task': {{ has_remaining_task|android }}
+  'has_remaining_task': {{ has_remaining_task|android }},
+  'done_tasks': {{ done_tasks }},
+  'type': {{ type }}
 }
