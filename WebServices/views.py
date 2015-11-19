@@ -152,7 +152,7 @@ def get_project_information_without_user(request, project_id):
     done_tasks = Task.objects.filter(project=project, done=True)
     khatm = len(done_tasks)*project.type.todo_num/project.type.target
     remaining_tasks = project.type.target/project.type.todo_num - \
-                    (len(done_tasks) % project.type.target/project.type.todo_num)
+        (len(done_tasks) % (project.type.target/project.type.todo_num))
     participated = False
     has_remaining_task = False
     return render(request, 'json/project_info.json', {'khatm': khatm, 'remaining_tasks': remaining_tasks,
