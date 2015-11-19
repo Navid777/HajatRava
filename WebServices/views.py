@@ -129,3 +129,16 @@ def records(request, username):
         else:
             doa_num += task.project.type.todo_num
     return render(request, 'records.html', {'salavat': salavat_num, 'quran': quran_parts, 'fatehe': fatehe_num, 'doa': doa_num})
+
+
+def get_project_information(request, username, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    done_tasks = Task.objects.filter(project=project, done=True)
+    user = get_object_or_404(User, username=username)
+    khatm = len(done_tasks)/project.type.num_of_episodes
+    remaining_tasks = project.type.num_of_episodes - (len(done_tasks) % project.type.num_of_episodes)
+    participated = len(Task.objects.filter(project=project, assigned_to=user)) != 0
+    has_remaining_task = len(Task.objects.filter(project=project, assigned_to=user, done=False)) == 0
+    return render(request, 'json/project_info.json', {'khatm': khatm, 'remaining_tasks': remaining_tasks,
+                                                      'participated': participated,
+                                                      'has_remaining_task': has_remaining_task})

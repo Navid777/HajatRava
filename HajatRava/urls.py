@@ -29,4 +29,5 @@ urlpatterns = [
     url(r'^login/$', views.login),
     url(r'^create_user/$', views.create_user),
     url(r'^records/(?P<username>\w+)$', views.records),
+    url(r'^get_project_info/(?P<username>\w+)/(?P<project_id>\d+)$', views.get_project_information),
 ]
