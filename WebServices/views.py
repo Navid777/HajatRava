@@ -3,6 +3,7 @@
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils.encoding import force_text
@@ -112,7 +113,11 @@ def create_user(request):
             email = request.POST['email']
         else:
             return render(request, 'json/error.json', 'ایمیل فرستاده نشده است.')
-        user = User.objects.create_user(username, email, password)
+        try:
+            user = User.objects.get(username=username)
+            return render(request, 'json/error.json', 'نام کاربری تکراری است.')
+        except ObjectDoesNotExist:
+            user = User.objects.create_user(username, email, password)
         user.save()
         return render(request, 'json/success.json')
     else:
