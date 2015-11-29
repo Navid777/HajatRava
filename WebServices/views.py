@@ -104,7 +104,7 @@ def create_user(request):
         if 'username' in request.POST:
             username = request.POST['username']
         else:
-            return render(request, 'json/error.json', 'نام کاربری فرستاده نشده است.')
+            return render(request, 'json/error.json', {'message': 'نام کاربری فرستاده نشده است.'})
         if 'password' in request.POST:
             password = request.POST['password']
         else:
@@ -112,10 +112,10 @@ def create_user(request):
         if 'email' in request.POST:
             email = request.POST['email']
         else:
-            return render(request, 'json/error.json', 'ایمیل فرستاده نشده است.')
+            return render(request, 'json/error.json', {'message': 'ایمیل فرستاده نشده است.'})
         try:
             user = User.objects.get(username=username)
-            return render(request, 'json/error.json', 'نام کاربری تکراری است.')
+            return render(request, 'json/error.json', {'message': ' نام کاربری تکراری است.'})
         except ObjectDoesNotExist:
             user = User.objects.create_user(username, email, password)
         user.save()
