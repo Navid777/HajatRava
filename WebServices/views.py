@@ -100,12 +100,23 @@ def login(request):
 @csrf_exempt
 def create_user(request):
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        email = request.POST['email']
+        if 'username' in request.POST:
+            username = request.POST['username']
+        else:
+            return render(request, 'json/error.json', 'نام کاربری فرستاده نشده است.')
+        if 'password' in request.POST:
+            password = request.POST['password']
+        else:
+            password = ''
+        if 'email' in request.POST:
+            email = request.POST['email']
+        else:
+            return render(request, 'json/error.json', 'ایمیل فرستاده نشده است.')
         user = User.objects.create_user(username, email, password)
         user.save()
         return render(request, 'json/success.json')
+    else:
+        return render(request, 'json/error.json', {'message': 'داده ها از طریق POST فرستاده نشده.'})
 
 
 def records(request, username):
