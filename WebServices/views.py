@@ -104,7 +104,7 @@ def create_user(request):
         if 'username' in request.POST:
             username = request.POST['username']
         else:
-            return render(request, 'json/error.json', {'message': 'نام کاربری فرستاده نشده است.'})
+            return HttpResponse("-Error: نام کاربری فرستاده نشده است.")
         if 'password' in request.POST:
             password = request.POST['password']
         else:
@@ -112,16 +112,16 @@ def create_user(request):
         if 'email' in request.POST:
             email = request.POST['email']
         else:
-            return render(request, 'json/error.json', {'message': 'ایمیل فرستاده نشده است.'})
+            return HttpResponse("-Error: ایمیل فرستاده نشده است.")
         try:
             user = User.objects.get(username=username)
-            return render(request, 'json/error.json', {'message': ' نام کاربری تکراری است.'})
+            return HttpResponse("-Error: نام کاربری تکراری است.")
         except ObjectDoesNotExist:
             user = User.objects.create_user(username, email, password)
         user.save()
         return render(request, 'json/success.json')
     else:
-        return render(request, 'json/error.json', {'message': 'داده ها از طریق POST فرستاده نشده.'})
+        return HttpResponse("-Error: داده ها ارسال نشده.")
 
 
 def records(request, username):
