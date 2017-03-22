@@ -31,4 +31,5 @@ urlpatterns = [
     url(r'^records/(?P<username>\w+)$', views.records),
     url(r'^get_project_info/(?P<username>\w+)/(?P<project_id>\d+)$', views.get_project_information),
     url(r'^get_project_info/(?P<project_id>\d+)$', views.get_project_information_without_user),
+    url(r'^create_project_by_user/$', views.create_project_by_user),
 ]

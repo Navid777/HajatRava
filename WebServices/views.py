@@ -8,7 +8,7 @@ from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils.encoding import force_text
 from django.views.decorators.csrf import csrf_exempt
-from WebServices.models import Text, Task, Project
+from WebServices.models import Text, Task, Project, Type
 from django.contrib.auth import login as auth_login
 import datetime
 
@@ -153,7 +153,7 @@ def get_project_information(request, username, project_id):
     user = get_object_or_404(User, username=username)
     khatm = len(done_tasks)*project.type.todo_num/project.type.target
     remaining_tasks = project.type.target/project.type.todo_num - \
-        (len(done_tasks) % (project.type.target/project.type.todo_num))
+        (len(done_tasks) % max(1, (project.type.target/project.type.todo_num)))
     participated = len(Task.objects.filter(project=project, assigned_to=user)) != 0
     has_remaining_task = (len(Task.objects.filter(project=project, assigned_to=user, done=False)) == 0)and participated
     return render(request, 'json/project_info.json', {'khatm': khatm, 'remaining_tasks': remaining_tasks,
@@ -168,10 +168,77 @@ def get_project_information_without_user(request, project_id):
     done_tasks = Task.objects.filter(project=project, done=True)
     khatm = len(done_tasks)*project.type.todo_num/project.type.target
     remaining_tasks = project.type.target/project.type.todo_num - \
-        (len(done_tasks) % (project.type.target/project.type.todo_num))
+        (len(done_tasks) % max(1, (project.type.target/project.type.todo_num)))
     participated = False
     has_remaining_task = False
     return render(request, 'json/project_info.json', {'khatm': khatm, 'remaining_tasks': remaining_tasks,
                                                       'participated': participated,
                                                       'has_remaining_task': has_remaining_task,
                                                       'done_tasks': len(done_tasks), 'type': project.type.id})
+
+@csrf_exempt
+def create_project_by_user(request):
+    try:
+        print request.POST
+        project_name = request.POST['khatmName']
+        project_description = project_name
+        try:
+            project_description = request.POST['khatmDescription']
+        except:
+            pass
+        public_task_message = request.POST['taskDescription']
+        username = request.POST['username']
+	type_description = request.POST['typeDescription']
+	type_target = int(request.POST['typeTarget'])
+	type_todo_num = int(request.POST['typeTodoNum'])
+        # password = request.POST['password']
+        # user = authenticate(username=username, password=password)
+        # if user is not None:
+        #    if user.is_active:
+        #        auth_login(request, user)
+        #    else:
+        #        return HttpResponse("F1")
+        # else:
+        #     return HttpResponse('F1')
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return HttpResponse('F1')
+        new_type = Type.objects.create(
+            title=u'عنوان تایپ',
+            description=type_description,
+            repeat_period_in_hour=12,
+            start_date=datetime.datetime.now(),
+            end_date=datetime.datetime.now(),
+            hours_to_remain_on_board=13,
+            number_restriction=100000,
+            task_message=u'پیام تایپ',
+            num_of_episodes=14,
+            target=type_target,
+            todo_num=type_todo_num,
+            parent_type=1,
+            num_of_repeat=17,
+            public_user_task=public_task_message,
+        )
+        project = Project.objects.create(
+            name=project_name,
+            type=new_type,
+            description=project_description,
+            general=False,
+            active=True,
+            start_date=datetime.datetime.now(),
+            end_date=datetime.datetime.now(),
+            create_date=datetime.datetime.now(),
+            creator=user
+        )
+        project.members.add(user)
+        project.save()
+
+        task = Task.objects.create(project=project, assigned_to=user, creator=user, due_date=project.end_date,
+                                   create_date=datetime.date.today(),
+                                   title=force_text(project.type.public_user_task).replace("%s",
+                                                                                           str(project.type.get_episode())))
+        return HttpResponse('S')
+    except Exception as e:
+        print e
+        return HttpResponse('F2')
