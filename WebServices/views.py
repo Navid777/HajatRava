@@ -4,6 +4,7 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models.query_utils import Q
 from django.http.response import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils.encoding import force_text
@@ -46,9 +47,16 @@ def set_task_done(request, task_id):
     return render(request, 'json/success.json', {'task': task})
 
 
-def get_projects(request):
-    projects = Project.objects.filter(active=True).order_by('-importance')
-    return render(request, 'json/projects.json', {'projects': projects})
+def get_projects(request, username=None):
+    try:
+        if username:
+            user = User.objects.get(username=username)
+            projects = Project.objects.filter(Q(active=True, general=True) | Q(creator=user, active=True) | Q(members__id=user.id, active=True)).distinct().order_by('-importance')
+        else:
+            projects = Project.objects.filter(active=True, general=True).distinct().order_by('-importance')
+        return render(request, 'json/projects.json', {'projects': projects})
+    except User.DoesNotExist:
+        return HttpResponse('E1')
 
 
 def get_user_projects(request, user_id):
@@ -62,14 +70,17 @@ def get_user_tasks(request, user_id):
 
 
 def add_user_to_project(request, project_id, username):
-    user = User.objects.get(username=username)
-    project = Project.objects.get(id=project_id)
-    project.members.add(user)
-    project.save()
-    task = Task.objects.create(project=project, assigned_to=user, creator=user, due_date=project.end_date,
+    try:
+        user = User.objects.get(username=username)
+        project = Project.objects.get(id=project_id)
+        project.members.add(user)
+        project.save()
+        task = Task.objects.create(project=project, assigned_to=user, creator=user, due_date=project.end_date,
                                create_date=datetime.date.today(), title=force_text(project.type.public_user_task).replace("%s", str(project.type.get_episode())))
-    task.save()
-    return render(request, 'json/success.json', {'project': project})
+        task.save()
+        return render(request, 'json/success.json', {'project': project})
+    except User.DoesNotExist:
+        return HttpResponse('E1')
 
 
 def get_project_tasks(request, project_id):
@@ -188,9 +199,10 @@ def create_project_by_user(request):
             pass
         public_task_message = request.POST['taskDescription']
         username = request.POST['username']
-	type_description = request.POST['typeDescription']
-	type_target = int(request.POST['typeTarget'])
-	type_todo_num = int(request.POST['typeTodoNum'])
+        type_description = request.POST['typeDescription']
+        type_target = int(request.POST['typeTarget'])
+        type_todo_num = int(request.POST['typeTodoNum'])
+        project_type = int(request.POST['projectType'])
         # password = request.POST['password']
         # user = authenticate(username=username, password=password)
         # if user is not None:
@@ -216,7 +228,7 @@ def create_project_by_user(request):
             num_of_episodes=14,
             target=type_target,
             todo_num=type_todo_num,
-            parent_type=1,
+            parent_type=project_type,
             num_of_repeat=17,
             public_user_task=public_task_message,
         )
@@ -238,7 +250,43 @@ def create_project_by_user(request):
                                    create_date=datetime.date.today(),
                                    title=force_text(project.type.public_user_task).replace("%s",
                                                                                            str(project.type.get_episode())))
+        print "S"
         return HttpResponse('S')
     except Exception as e:
-        print e
+        print "F2", e
         return HttpResponse('F2')
+
+
+def remove_member_from_project(request, project_id, username):
+    try:
+        user = User.objects.get(username=username)
+        project = Project.objects.get(id=project_id)
+        if user not in project.members.all():
+            return HttpResponse('E3')
+        project.members.remove(user)
+        tasks = Task.objects.filter(project=project, assigned_to=user)
+        for t in tasks:
+            t.delete()
+        project.save()
+        return render(request, 'json/success.json', {'project': project})
+    except User.DoesNotExist:
+        return HttpResponse('E1')
+    except Project.DoesNotExist:
+        return HttpResponse('E2')
+
+
+def remove_project_for_all(request, project_id, username):
+    try:
+        user = User.objects.get(username=username)
+        project = Project.objects.get(id=project_id)
+        if project.creator == user:
+            project.active = False
+            project.save()
+        else:
+            return HttpResponse('E3')
+        return render(request, 'json/success.json', {'project': project})
+    except User.DoesNotExist:
+        return HttpResponse('E1')
+    except Project.DoesNotExist:
+        return HttpResponse('E2')
+
