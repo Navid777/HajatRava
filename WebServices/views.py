@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from WebServices.models import Text, Task, Project, Type
 from django.contrib.auth import login as auth_login
 import datetime
+import requests
 
 
 def get_about_us(request):
@@ -87,9 +88,14 @@ def get_user_tasks(request, username):
 def login(request):
     if request.method == "POST":
         username = request.POST['username']
-        if len(User.objects.filter(username=username)) == 0:
-            return HttpResponse("F1")
         password = request.POST['password']
+        if len(User.objects.filter(username=username)) == 0:
+            r = requests.get('http://185.37.53.126/is_authenticated', params={'phone_number': username, 'short_code': '3071183'})
+            if r.text == '0':
+                return HttpResponse("F1")
+            else:
+                User.objects.create_user(username, '', password)
+                return HttpResponse('S')
         user = authenticate(username=username, password=password)
         if user is not None:
             if user.is_active:
